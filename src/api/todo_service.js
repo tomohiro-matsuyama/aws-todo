@@ -9,12 +9,43 @@ export class TodoService {
     static async fetchFromApi(url, options = {}) {
         // 新しいリクエスト前に既存のメッセージを削除
         Message.dispose();
+
+        return fetch(url,options)
+        .then((res) => {
+            if (!res.ok){
+                throw new Error('HTTP error! Status: ${res.status}');
+            }
+            return res.json();
+        })
+        .catch((error) => {
+            console.error("API error:", error);
+            throw error;
+        });
     }
 
     /**
      * GetTodo を呼び出す関数。
      */
-    static async getAll() {}
+    static async getAll() {
+        return this.fetchFromApi(ApiUrls, getTodo)
+            .then((data) =>
+                data.map(
+                    (item) =>
+                        new Todo(
+                            item.id,
+                            item.title,
+                            item.detail,
+                            item.deadLine,
+                            item.is_done,
+                            item.is_deleted
+                        )
+                )
+            )
+            .catch((error) => {
+                console.error("Error fetching todos:", error);
+                return [];
+            });
+    }
 
     /**
      * ManageTodo を呼び出す関数。
