@@ -27,7 +27,7 @@ export class TodoService {
      * GetTodo を呼び出す関数。
      */
     static async getAll() {
-        return this.fetchFromApi(ApiUrls, getTodo)
+        return this.fetchFromApi(ApiUrls.getTodo)
             .then((data) =>
                 data.map(
                     (item) =>
